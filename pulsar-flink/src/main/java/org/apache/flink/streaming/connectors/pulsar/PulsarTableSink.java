@@ -34,6 +34,7 @@ import org.apache.flink.table.sinks.AppendStreamTableSink;
 import org.apache.flink.table.sinks.TableSink;
 import org.apache.flink.types.Row;
 import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
 
 /**
  * An append-only table sink to emit a streaming table as a Pulsar stream.
@@ -48,6 +49,13 @@ public abstract class PulsarTableSink implements AppendStreamTableSink<Row> {
     protected String[] fieldNames;
     protected TypeInformation[] fieldTypes;
     protected final String routingKeyFieldName;
+
+    public PulsarTableSink(
+            String serviceUrl,
+            String topic,
+            String routingKeyFieldName) {
+        this(serviceUrl, topic, new AuthenticationDisabled(), routingKeyFieldName);
+    }
 
     public PulsarTableSink(
             String serviceUrl,

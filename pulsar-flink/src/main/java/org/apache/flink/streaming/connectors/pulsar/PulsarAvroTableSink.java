@@ -37,6 +37,7 @@ import org.apache.flink.table.sinks.AppendStreamTableSink;
 import org.apache.flink.table.sinks.TableSink;
 import org.apache.flink.types.Row;
 import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
 
 /**
  * An append-only table sink to emit a streaming table as a Pulsar stream that serializes data in Avro format.
@@ -58,6 +59,22 @@ public class PulsarAvroTableSink implements AppendStreamTableSink<Row> {
      *
      * @param serviceUrl          pulsar service url
      * @param topic               topic in pulsar to which table is written
+     * @param routingKeyFieldName routing key field name
+     */
+    public PulsarAvroTableSink(
+            String serviceUrl,
+            String topic,
+            String routingKeyFieldName,
+            Class<? extends SpecificRecord> recordClazz) {
+        this(serviceUrl, topic, new AuthenticationDisabled(), routingKeyFieldName, recordClazz);
+    }
+
+    /**
+     * Create PulsarAvroTableSink.
+     *
+     * @param serviceUrl          pulsar service url
+     * @param topic               topic in pulsar to which table is written
+     * @param authentication      authentication info to pass to pulsar client if auth enabled
      * @param routingKeyFieldName routing key field name
      */
     public PulsarAvroTableSink(

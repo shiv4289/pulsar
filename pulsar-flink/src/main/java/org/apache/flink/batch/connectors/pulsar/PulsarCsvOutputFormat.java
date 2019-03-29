@@ -21,6 +21,7 @@ package org.apache.flink.batch.connectors.pulsar;
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.batch.connectors.pulsar.serialization.CsvSerializationSchema;
 import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
 
 /**
  * Pulsar Csv Output Format to write Flink DataSets into a Pulsar topic in Csv format.
@@ -29,9 +30,12 @@ public class PulsarCsvOutputFormat<T extends Tuple> extends BasePulsarOutputForm
 
     private static final long serialVersionUID = -4461671510903404196L;
 
+    public PulsarCsvOutputFormat(String serviceUrl, String topicName) {
+        this(serviceUrl, topicName, new AuthenticationDisabled());
+    }
+
     public PulsarCsvOutputFormat(String serviceUrl, String topicName, Authentication authentication) {
         super(serviceUrl, topicName, authentication);
         this.serializationSchema = new CsvSerializationSchema<>();
     }
-
 }

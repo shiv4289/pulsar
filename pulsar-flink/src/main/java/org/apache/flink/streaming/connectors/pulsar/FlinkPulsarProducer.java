@@ -40,6 +40,7 @@ import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.TypedMessageBuilder;
 import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,10 +121,25 @@ public class FlinkPulsarProducer<IN>
 
     public FlinkPulsarProducer(String serviceUrl,
                                String defaultTopicName,
+                               SerializationSchema<IN> serializationSchema,
+                               PulsarKeyExtractor<IN> keyExtractor) {
+        this(serviceUrl, defaultTopicName, new AuthenticationDisabled(), serializationSchema, keyExtractor, null);
+    }
+
+    public FlinkPulsarProducer(String serviceUrl,
+                               String defaultTopicName,
                                Authentication authentication,
                                SerializationSchema<IN> serializationSchema,
                                PulsarKeyExtractor<IN> keyExtractor) {
         this(serviceUrl, defaultTopicName, authentication, serializationSchema, keyExtractor, null);
+    }
+
+    public FlinkPulsarProducer(String serviceUrl,
+                               String defaultTopicName,
+                               SerializationSchema<IN> serializationSchema,
+                               PulsarKeyExtractor<IN> keyExtractor,
+                               Producer<byte[]> producer) {
+        this(serviceUrl, defaultTopicName, new AuthenticationDisabled(), serializationSchema, keyExtractor, producer);
     }
 
     public FlinkPulsarProducer(String serviceUrl,
